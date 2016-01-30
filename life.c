@@ -107,7 +107,7 @@ int BottomOf (WORLD *world, uint16_t row, uint16_t col)
 {
    if (row < World_Height(world) - 1)
       return World_CellAt(world, row + 1, col);
-   char wraparound = World_WrapsHorizontally(world);
+   char wraparound = World_WrapsVertically(world);
    return !wraparound ? DEAD : World_CellAt(world, 0, col);
 }
 
