@@ -114,7 +114,7 @@ void init_world (WORLD *world, char *contents, long len)
             PARSE_ERR("Error parsing file.\n");
 
          // Load into world.
-         int cell = (int) contents[i];
+         int cell = contents[i] - 48; // convert ASCII value to int
          World_SetCell(world, row, col, cell);
 
          // Increment index.

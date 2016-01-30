@@ -2,9 +2,12 @@
 #ifndef SIM_H
 #define SIM_H
 
-   #include "world.h"
    #include "life.h"
    #include "parser.h"
+   #include "world.h"
+
+   #include <ncurses.h>
+   #include <unistd.h>
 
 #endif
 
