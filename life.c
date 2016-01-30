@@ -35,10 +35,18 @@ GameOfLife (WORLD *world)
          // Get info about current cell.
          int neighbours = NeighboursAlive(world, row, col);
          int idx = INDEX(row, col);
+         int cell = World_CellAt(world, row, col);
 
-         // Under or over population kills the cell.
-         if (neighbours == 3) new_board[idx] = ALIVE;
-         else new_board[idx] = DEAD;
+         // Under or over population kills a live cell.
+         if (cell && neighbours < 2)
+            new_board[idx] = DEAD;
+         else if (cell && neighbours > 3)
+            new_board[idx] = DEAD;
+         else if (cell)
+            new_board[idx] = ALIVE;
+         else if (!cell && neighbours == 3)
+            new_board[idx] = ALIVE;
+
       }
    }
 
