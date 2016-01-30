@@ -61,8 +61,6 @@ World_CellAt (struct world *world,
    return world->contents[row*width + col];
 }
 
-#include <stdio.h>
-
 inline void
 World_SetCell (struct world *world, int row, int col, int newValue)
 {
