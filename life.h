@@ -4,5 +4,8 @@
    
    #include "world.h"
 
+void
+GameOfLife (WORLD *world);
+
 #endif
 

@@ -8,18 +8,23 @@
 typedef struct world WORLD;
 typedef void (*AutomataFunc)(struct world *world);
 
-void
-World_NewWorld (struct world *world,
-               uint16_t width, uint16_t height,
-               char horizontal_wrap, char vertical_wrap,
-               AutomataFunc automata_rules);
+int
+World_SizeOf ();
 
 void
-World_DelWorld (WORLD *world);
+World_New (WORLD *world,
+           uint16_t width, uint16_t height,
+           char horizontal_wrap, char vertical_wrap);
+
+void
+World_Del (WORLD *world);
 
 int
 World_CellAt (WORLD *world,
              uint16_t row, uint16_t col);
+
+void
+World_SetRules (struct world *world, AutomataFunc func);
 
 void
 World_SetCell (struct world *world, int row, int col, int newValue);

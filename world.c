@@ -20,23 +20,33 @@ void Bounds_Check (struct world *world, uint16_t row, uint16_t col);
 // Public functions.
 // ================================================================================
 
-void
-World_NewWorld (struct world *world,
-               uint16_t width, uint16_t height,
-               char horizontal_wrap, char vertical_wrap,
-               AutomataFunc automata_rules)
+
+int
+World_SizeOf ()
 {
-   world = malloc (sizeof (struct world));
+   return sizeof (struct world);
+}
+
+void
+World_New (struct world *world,
+           uint16_t width, uint16_t height,
+           char horizontal_wrap, char vertical_wrap)
+{
    world->width = width;
    world->height = height;
    world->horizontal_wrap = horizontal_wrap;
    world->vertical_wrap = vertical_wrap;
-   world->automata_func = automata_rules;
    world->contents = malloc(sizeof(int) * width * height);
 }
 
 void
-World_DelWorld (struct world *world)
+World_SetRules (struct world *world, AutomataFunc func)
+{
+   world->automata_func = func;
+}
+
+void
+World_Del (struct world *world)
 {
    free(world->contents);
    free(world);
@@ -50,6 +60,8 @@ World_CellAt (struct world *world,
    uint16_t width = world->width;
    return world->contents[row*width + col];
 }
+
+#include <stdio.h>
 
 inline void
 World_SetCell (struct world *world, int row, int col, int newValue)
@@ -101,9 +113,5 @@ Bounds_Check (struct world *world,
 {
    if (row < 0 || col < 0 || row >= world->height || col >= world->width)
       abort();
-}
-
-int main (int argc, char **argv)
-{
 }
 
