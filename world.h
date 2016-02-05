@@ -6,7 +6,7 @@
 #endif
 
 typedef struct world WORLD;
-typedef void (*AutomataFunc)(struct world *world);
+typedef void (*AutomataFunc)(WORLD *world);
 
 int
 World_SizeOf ();
@@ -24,25 +24,25 @@ World_CellAt (WORLD *world,
              uint16_t row, uint16_t col);
 
 void
-World_SetRules (struct world *world, AutomataFunc func);
+World_SetRules (WORLD *world, AutomataFunc func);
 
 void
-World_SetCell (struct world *world, int row, int col, int newValue);
+World_SetCell (WORLD *world, int row, int col, int newValue);
 
 void
 World_Iterate (WORLD *world);
 
 char
-World_WrapsVertically (struct world *world);
+World_WrapsVertically (WORLD *world);
 
 char
-World_WrapsHorizontally (struct world *world);
+World_WrapsHorizontally (WORLD *world);
 
 uint16_t
-World_Height (struct world *world);
+World_Height (WORLD *world);
 
 uint16_t
-World_Width (struct world *world);
+World_Width (WORLD *world);
 
 
 
