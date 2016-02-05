@@ -2,6 +2,8 @@
 #include "sim.h"
 
 #define COL_BORDER 50
+#define COL_ALIVE 1
+#define COL_DEAD 2
 
 WINDOW * init_gui();
 void init_colours();
@@ -9,9 +11,9 @@ void init_colours();
 void
 init_colours()
 {
-   init_pair(50, COLOR_YELLOW, COLOR_BLACK);
-   init_pair(0, COLOR_WHITE, COLOR_BLACK);
-   init_pair(1, COLOR_GREEN, COLOR_BLACK);
+   init_pair(COL_BORDER, COLOR_YELLOW, COLOR_BLACK);
+   init_pair(COL_ALIVE, COLOR_GREEN, COLOR_BLACK);
+   init_pair(COL_DEAD, COLOR_WHITE, COLOR_BLACK);
 }
 
 WINDOW *
@@ -25,12 +27,6 @@ init_gui (WORLD *world)
    noecho();
    curs_set(FALSE);
 
-   // Enable function keys to be registered by ncurses.
-   keypad(stdscr, TRUE);
-
-   // Enable non-blocking input.
-   timeout(0);   
-
    // Enable colours.
    if (has_colors() == FALSE) {
       fprintf(stderr, "No colour - no exiting.");
@@ -41,6 +37,11 @@ init_gui (WORLD *world)
 
    // Set up window.
    WINDOW *window_menu = newwin(World_Height(world) + 2, World_Width(world) + 2, 0, 0);
+   
+   // Enable non-blocking input.
+   wtimeout(window_menu, 0);
+
+   // Done.
    return window_menu; 
 
 }
@@ -54,28 +55,36 @@ end_gui (WINDOW *window)
 }
 
 void
-draw_board (WINDOW *window, WORLD *world)
+redraw_board (WINDOW *window, WORLD *world)
 {
 
+   // Clear the window.
+   wclear(window);
+
+   // Draw the border.
    wattron(window, COLOR_PAIR(COL_BORDER));
    wborder(window, '|', '|', '-', '-', '+', '+', '+', '+');
    wattroff(window, COLOR_PAIR(COL_BORDER));
 
-   for (int row = 0; row < World_Height(world); row++) {
-      for (int col = 0; col < World_Width(world); col++) {
+   // Draw the board.
+   for (uint16_t row = 0; row < World_Height(world); row++) {
+      for (uint16_t col = 0; col < World_Width(world); col++) {
 
          // Get cell.
          int cell = World_CellAt(world, row, col);
+         char c = '.';
+         int color = COL_DEAD;
 
-         // Set color and character according to cell.
-         wattron(window, COLOR_PAIR(cell));
-         char toPrint;
-         if (!cell) toPrint = '.';
-         else toPrint = 'o';
+         // If cell is alive, set color and char appropriately.
+         if (cell != 0) {
+            c = 'o';
+            color = COL_ALIVE;
+         }
 
-         // Print cell, turn off colour.
-         mvwaddch(window, row + 1, col + 1, toPrint); 
-         wattroff(window, COLOR_PAIR(cell));
+         // Print cell.
+         wattron(window, COLOR_PAIR(color));
+         mvwaddch(window, row + 1, col + 1, c);
+         wattroff(window, COLOR_PAIR(color));
 
       }   
    }
@@ -100,9 +109,11 @@ main (int argc, char **argv)
 
    WINDOW *window = init_gui(world);
 
+   long UPDATE_DELAY = 250000;
+
    while (1) {
-      draw_board(window, world);
-      usleep(500000);
+      redraw_board(window, world);
+      usleep(UPDATE_DELAY);
       World_Iterate(world);  
    }
 
