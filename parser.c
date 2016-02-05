@@ -99,15 +99,15 @@ void init_world (WORLD *world, char *contents, long len)
    *idx = 0;
 
    // Parse header.
-   int width = NUM;
-   int height = NUM;
+   int num_rows = NUM;
+   int num_cols = NUM;
 
-   World_New (world, width, height, 1, 1);
+   World_New (world, num_cols, num_rows, 1, 1);
 
    // Parse board.
-   for (uint16_t row = 0; row < height; row++) {
+   for (uint16_t row = 0; row < num_rows; row++) {
       int i = *idx;
-      for (uint16_t col = 0; col < width; col++) {
+      for (uint16_t col = 0; col < num_cols; col++) {
 
          // Check there is something to parse.
          if (i >= len || !isdigit(contents[i]))
@@ -128,13 +128,4 @@ void init_world (WORLD *world, char *contents, long len)
    free(idx);
 
 }
-
-
-
-
-
-
-
-
-
 
