@@ -36,7 +36,9 @@ init_gui (WORLD *world)
    init_colours();
 
    // Set up window.
-   WINDOW *window_menu = newwin(World_Height(world) + 2, World_Width(world) + 2, 0, 0);
+   uint64_t width, height;
+   getmaxyx(stdscr, height, width);
+   WINDOW *window_menu = newwin(height, width, 0, 0);
    
    // Enable non-blocking input.
    wtimeout(window_menu, 0);
@@ -55,16 +57,66 @@ end_gui (WINDOW *window)
 }
 
 void
+my_draw_border (WINDOW *window, uint16_t left, uint16_t top, WORLD *world)
+{
+   
+   wattron(window, COLOR_PAIR(COL_BORDER));
+
+   uint64_t width = World_Width(world);
+   uint64_t height = World_Height(world);
+
+   uint64_t right = left + width + 1;
+   uint64_t bottom = top + height + 1;
+   
+   // Top of border.
+   for (uint64_t col = left; col <= right; col++) {
+      if (col == left || col == right)
+         mvwaddch(window, top, col, '+');
+      else
+         mvwaddch(window, top, col, '-');
+   }
+   
+   // Bottom of border.
+   for (uint64_t col = left; col <= right; col++) {
+      if (col == left || col == right)
+         mvwaddch(window, bottom, col, '+');
+      else
+         mvwaddch(window, bottom, col, '-');
+   }
+
+   // Left of border.
+   for (uint64_t row = top; row <= bottom; row++) {
+      if (row == top || row == bottom)
+         mvwaddch(window, row, left, '+');
+      else
+         mvwaddch(window, row, left, '|');
+   }
+
+   // Right of border.
+   for (uint64_t row = top; row <= bottom; row++) {
+      if (row == top || row == bottom)
+         mvwaddch(window, row, right, '+');
+      else
+         mvwaddch(window, row, right, '|');
+   }
+
+   wattroff(window, COLOR_PAIR(COL_BORDER));
+
+}
+
+void
 redraw_board (WINDOW *window, WORLD *world)
 {
 
    // Clear the window.
    wclear(window);
 
-   // Draw the border.
-   wattron(window, COLOR_PAIR(COL_BORDER));
-   wborder(window, '|', '|', '-', '-', '+', '+', '+', '+');
-   wattroff(window, COLOR_PAIR(COL_BORDER));
+   // Offsets to place it into the middle.
+   uint16_t width, height;
+   getmaxyx(window, height, width);
+   uint16_t left = width / 2;
+   uint16_t top = height / 2;
+   my_draw_border(window, left, top, world);
 
    // Draw the board.
    for (uint16_t row = 0; row < World_Height(world); row++) {
@@ -88,7 +140,7 @@ redraw_board (WINDOW *window, WORLD *world)
 
       }   
    }
-   
+
    wrefresh(window);
 
 }
