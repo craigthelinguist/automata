@@ -114,8 +114,8 @@ redraw_board (WINDOW *window, WORLD *world)
    // Offsets to place it into the middle.
    uint16_t width, height;
    getmaxyx(window, height, width);
-   uint16_t left = width / 2;
-   uint16_t top = height / 2;
+   uint16_t left = width / 4;
+   uint16_t top = height / 4;
    my_draw_border(window, left, top, world);
 
    // Draw the board.
@@ -135,7 +135,7 @@ redraw_board (WINDOW *window, WORLD *world)
 
          // Print cell.
          wattron(window, COLOR_PAIR(color));
-         mvwaddch(window, row + 1, col + 1, c);
+         mvwaddch(window, top + col + 1, left + row + 1, c);
          wattroff(window, COLOR_PAIR(color));
 
       }   
